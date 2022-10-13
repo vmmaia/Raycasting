@@ -1,15 +1,15 @@
 import Canvas from './classes/Canvas.js';
+import Boundary from './classes/Boundary.js';
 import Camera from './classes/Camera.js';
-import { Vector2D, degToRad } from './util/util.js';
+import { degToRad } from './util/util.js';
 
 let DEBUG = false;
-const FRAMERATE = 60;
+const REFRESH_RATE = 60;
 
-let canvas = new Canvas;
+const canvas = new Canvas;
 
 let camera;
-let fov = 60;
-let numberOfRays = 90;
+let numberOfBoundaries = 5;
 let boundaries = [];
 
 /**
@@ -19,6 +19,7 @@ const drawDebug = () => {
     const info = [
         "-- DEBUG ------------------",
         `canvas: ${canvas.width}x${canvas.height}`,
+        `boundaries: ${numberOfBoundaries}`,
         `c_X: ${camera.x}`,
         `c_Y: ${camera.y}`,
         `c_D: ${camera.direction}`,
@@ -54,7 +55,7 @@ const drawDebug = () => {
  */
 const drawBoundaries = () => {
     for(const boundary of boundaries){
-        const points = boundary.getLineSegmentPoints();
+        const points = boundary.getBoundaryPoints();
         canvas.drawLine(points.x0, points.y0, points.x1, points.y1, "#fff");
     }
 }
@@ -67,10 +68,10 @@ const drawBoundaries = () => {
 const createBoundaries = (n) => {
     const vectors = [];
 
-    vectors.push(new Vector2D(0, 0, canvas.width, degToRad(0)));
-    vectors.push(new Vector2D(0, 0, canvas.height, degToRad(90)));
-    vectors.push(new Vector2D(canvas.width, canvas.height, canvas.width, degToRad(180)));
-    vectors.push(new Vector2D(canvas.width, canvas.height, canvas.height, degToRad(270)));
+    vectors.push(new Boundary(0, 0, canvas.width, degToRad(0)));
+    vectors.push(new Boundary(0, 0, canvas.height, degToRad(90)));
+    vectors.push(new Boundary(canvas.width, canvas.height, canvas.width, degToRad(180)));
+    vectors.push(new Boundary(canvas.width, canvas.height, canvas.height, degToRad(270)));
 
     for(let i=0; i<n; i++){
         const x = Math.random() * canvas.width;
@@ -78,7 +79,7 @@ const createBoundaries = (n) => {
         const length = 50 + Math.random() * (1000 - 50);
         const direction = Math.random() * 360;
 
-        vectors.push(new Vector2D(x, y, length, degToRad(direction)));
+        vectors.push(new Boundary(x, y, length, degToRad(direction)));
     }
 
     boundaries = vectors;
@@ -89,10 +90,9 @@ const createBoundaries = (n) => {
  * 
  * @param {*} x Position in the X axis
  * @param {*} y Position in the Y axis
- * @param {*} direction Direction in degrees
  */
-const createCamera = (x, y, direction) => {
-    camera = new Camera(x, y, direction, fov, numberOfRays);
+const createCamera = (x, y) => {
+    camera = new Camera(x, y);
 }
 
 /**
@@ -101,34 +101,38 @@ const createCamera = (x, y, direction) => {
 const addListeners = () => {
     window.addEventListener("keydown", (e) => {
         switch (e.key) {
-            case "w": camera.move('up');                break;
-            case "s": camera.move('down');              break;
-            case "a": camera.move('left');              break;
-            case "d": camera.move('right');             break;
-            case "+": camera.changeSpeed('accelerate'); break;
-            case "-": camera.changeSpeed('break');      break;
-            case "ArrowLeft": camera.rotate('left');    break;
-            case "ArrowRight": camera.rotate('right');  break;
-            case " ": DEBUG = !DEBUG;                   break;
-            case "r": createBoundaries(5);              break;
+            case "w": camera.move('up');                    break;
+            case "s": camera.move('down');                  break;
+            case "a": camera.move('left');                  break;
+            case "d": camera.move('right');                 break;
+            case "+": camera.changeSpeed('accelerate');     break;
+            case "-": camera.changeSpeed('break');          break;
+            case "ArrowLeft": camera.rotate('left');        break;
+            case "ArrowRight": camera.rotate('right');      break;
+            case " ": DEBUG = !DEBUG;                       break;
+            case "r": createBoundaries(numberOfBoundaries); break;
+            case "t":
+                numberOfBoundaries > 0 ? numberOfBoundaries-- : null;
+                createBoundaries(numberOfBoundaries);
+                break;
+            case "y":
+                numberOfBoundaries++;
+                createBoundaries(numberOfBoundaries);
+                break;
             case "n":
-                fov > 1 ? fov-- : null;
-                camera.fov = fov;
+                camera.fov > 1 ? camera.fov-- : null;
                 camera.createRays();
                 break;
             case "m":
-                fov < 359 ? fov++ : null;
-                camera.fov = fov;
+                camera.fov < 359 ? camera.fov++ : null;
                 camera.createRays();
                 break;
             case "z":
-                numberOfRays > 1 ? numberOfRays-- : null;
-                camera.numberOfRays = numberOfRays;
+                camera.numberOfRays > 1 ? camera.numberOfRays-- : null;
                 camera.createRays();
                 break;
             case "x":
-                numberOfRays++;
-                camera.numberOfRays = numberOfRays;
+                camera.numberOfRays++;
                 camera.createRays();
                 break;
         }
@@ -139,8 +143,8 @@ const addListeners = () => {
  * Initial instatiations
  */
 const setup = () => {
-    createBoundaries(5);
-    createCamera(canvas.width / 2, canvas.height / 2, -90);
+    createBoundaries(numberOfBoundaries);
+    createCamera(canvas.width / 2, canvas.height / 2);
     addListeners();
 }
 
@@ -156,7 +160,7 @@ const mainLoop = () => {
         drawBoundaries();
 
         if(DEBUG) drawDebug();
-    }, 1000 / FRAMERATE);
+    }, 1000 / REFRESH_RATE);
 }
 
 setup();

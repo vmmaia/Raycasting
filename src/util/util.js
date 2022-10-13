@@ -7,23 +7,12 @@ export class Vector2D {
      * 
      * @param {*} x Origin X component
      * @param {*} y Origin Y component
-     * @param {*} length Vector length
      * @param {*} directionInRad Direction in radians
      */
-    constructor(x, y, length, directionInRad){
+    constructor(x, y, directionInRad){
         this.x = x;
         this.y = y;
         this.direction = sanatizeRadians(directionInRad);
-        this.length = length;
-    }
-
-    getLineSegmentPoints = () => {
-        return {
-            x0: this.x,
-            y0: this.y,
-            x1: this.x + (Math.cos(this.direction) * this.length),
-            y1: this.y + (Math.sin(this.direction) * this.length)
-        }
     }
 }
 

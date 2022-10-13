@@ -1,8 +1,16 @@
 import { Vector2D } from "../util/util.js";
 
+/**
+ * Ray class
+ */
 class Ray extends Vector2D{
+    /**
+     * Creates a ray pointed in a given direction
+     * 
+     * @param {*} directionInRad Direction the rays is pointed in radians
+     */
     constructor(directionInRad){
-        super(0, 0, 0, directionInRad);
+        super(0, 0, directionInRad);
     }
 
     /**
@@ -15,7 +23,7 @@ class Ray extends Vector2D{
      * @returns Object with x and y coordinates of intersection {x, y} or false if no intersection
      */
     checkIntersection = (cameraX, cameraY, boundary) => {
-        const boundaryPoints = boundary.getLineSegmentPoints();
+        const boundaryPoints = boundary.getBoundaryPoints();
 
         const x1 = cameraX;
         const y1 = cameraY;

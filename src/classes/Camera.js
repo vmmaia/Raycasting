@@ -13,16 +13,13 @@ class Camera{
      * 
      * @param {*} x Position X component
      * @param {*} y Position Y component
-     * @param {*} direction Direction in degrees
-     * @param {*} fov Field of view in degrees
-     * @param {*} numberOfRays Number of rays to cast
      */
-    constructor(x, y, direction, fov, numberOfRays){
+    constructor(x, y){
         this.x = x;
         this.y = y;
-        this.fov = sanatizeDegrees(fov);
-        this.direction = sanatizeDegrees(direction);
-        this.numberOfRays = numberOfRays;
+        this.fov = 60;
+        this.direction = 270;
+        this.numberOfRays = 240;
         
         this.canvas = new Canvas;
         this.createRays();

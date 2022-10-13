@@ -15,6 +15,8 @@ Proof of concept of a raycaster implemented in Javascript.
 | Arrow right | Rotate camera right |
 | + | Increase camera movement speed |
 | - | Decrease camera movement speed |
+| t | Decrease the number of boundaries |
+| y | Increase the number of boundaries |
 | z | Decrease the number of rays |
 | x | Increase the number of rays |
 | n | Decrease the field of vision |
