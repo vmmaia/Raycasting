@@ -152,15 +152,15 @@ const setup = () => {
  * Main logic loop
  */
 const mainLoop = () => {
-    setInterval(() => {
-        canvas.clearCanvas();
-        canvas.drawCircle(camera.x, camera.y, 5, '#ff0000');
-        
-        camera.castRays(boundaries);
-        drawBoundaries();
+    canvas.clearCanvas();
+    canvas.drawCircle(camera.x, camera.y, 5, '#ff0000');
+    
+    camera.castRays(boundaries);
+    drawBoundaries();
 
-        if(DEBUG) drawDebug();
-    }, 1000 / REFRESH_RATE);
+    if(DEBUG) drawDebug();
+
+    window.requestAnimationFrame(mainLoop);
 }
 
 setup();
