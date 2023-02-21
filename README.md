@@ -4,6 +4,9 @@
 
 Proof of concept of a raycaster implemented in Javascript.
 
+## Live preview
+https://vmmaia.github.io/Raycasting/
+
 ## Keyboard shortcuts
 | Key | description |
 | --- | ----------- |
